@@ -7,7 +7,7 @@ module Enumerable
 		end
   end
 
-	def my_each_with_index
+  def my_each_with_index
 		return enum_for(:my_each_with_index) unless block_given?
 
 	  for i in 0..length-1 do 
