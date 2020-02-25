@@ -54,5 +54,34 @@ module Enumerable
 	end
 
 	def my_none?
-		my_each
+		if block_given?
+			my_each do |item|
+				return false if yield(item)
+			end
+		else
+			my_each do |item|
+				return false if item
+			end
+		end
+		true
+	end
+
+	def my_count(p1 = nil)
+		count = 0
+
+		if !p1.nil?
+			my_each do |item|
+				count += 1 if item == p1
+			end
+		elsif block_given?
+			my_each do |item|
+				count += 1 if yield(item)
+			end
+		else
+			my_each do |item|
+				count += 1
+			end
+		end
+		count
+	end
 end
