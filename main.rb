@@ -1,46 +1,50 @@
 module Enumerable
   def my_each
-		return enum_for(:my_each) unless block_given?
+	return enum_for(:my_each) unless block_given?
 
-		for i in 0..length-1 do
-			yield(self[i])
-		end
-		self
+	for i in 0..length-1 do
+		yield(self[i])
+	end
+	self
   end
 
   def my_each_with_index
-		return enum_for(:my_each_with_index) unless block_given?
+	return enum_for(:my_each_with_index) unless block_given?
 
-	  for i in 0..length-1 do 
-			yield(self[i], i)
+	for i in 0..length-1 do 
+		yield(self[i], i)
     end
-		self
+	self
   end
 
-	def my_select
-		return enum_for(:my_select) unless block_given?
+  def my_select
+	return enum_for(:my_select) unless block_given?
 
-		items_selected = []
+	items_selected = []
 
-		my_each do |item|
-			items_selected << item if yield(item)
-		end
-
-		items_selected
-  end
-
-	def my_all?
-		if block_given?
-			my_each do |item|
-				return false unless yield(item)	
-			end
-		else
-			my_each do |item|
-				return false unless item
-			end
-		end
-		true
+	my_each do |item|
+		items_selected << item if yield(item)
 	end
+	items_selected
+  end
+
+  def my_all?(*args)
+
+	if !args[0].nil?
+		my_each do |item|
+			return false unless args[0] === item
+		end
+	elsif block_given?
+		my_each do |item|
+			return false unless yield(item)	
+		end
+	else
+		my_each do |item|
+			return false unless item
+		end
+	end
+	true
+  end
 
 	def my_any?
 		if block_given?
@@ -131,3 +135,11 @@ module Enumerable
 		acc
 	end
 end
+
+def multiply_els(arr)
+	arr.my_inject { |acc, curr| acc * curr }
+end
+
+result = multiply_els([2,4,5])
+
+p "result: #{result}"
