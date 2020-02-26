@@ -46,8 +46,12 @@ module Enumerable
 	true
   end
 
-	def my_any?
-		if block_given?
+	def my_any?(*args)
+		if !args[0].nil?
+			my_each do |item|
+				return true if args[0] === item
+			end
+		elsif block_given?
 			my_each do |item|
 				return true if yield(item)
 			end
@@ -59,8 +63,12 @@ module Enumerable
 		false
 	end
 
-	def my_none?
-		if block_given?
+	def my_none?(*args)
+		if !args[0].nil?
+			my_each do |item|
+				return false if args[0] === item
+			end
+		elsif block_given?
 			my_each do |item|
 				return false if yield(item)
 			end
