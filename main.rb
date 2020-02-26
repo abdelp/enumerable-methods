@@ -137,7 +137,7 @@ module Enumerable
       acc = acc ? yield(acc, curr) : curr
       end
     else
-      raise "no block given"
+      raise 'no block given'
     end
     acc
   end
@@ -146,7 +146,3 @@ end
 def multiply_els(arr)
   arr.my_inject { |acc, curr| acc * curr }
 end
-
-result = multiply_els([2,4,5])
-
-p "result: #{result}"
