@@ -13,6 +13,7 @@ module Enumerable
 	  for i in 0..length-1 do 
 			yield(self[i], i)
     end
+		self
   end
 
 	def my_select
@@ -83,5 +84,49 @@ module Enumerable
 			end
 		end
 		count
+	end
+
+	def my_map
+		return enum_for(:my_map) unless block_given?
+
+		arr = []
+		my_each do |item|
+			arr << yield(item)
+		end
+		arr
+	end
+
+	def my_inject(p1 = nil, p2 = nil)
+		sym = nil
+		acc = nil
+	
+		if p1.is_a? (Integer)
+		  acc = p1
+		  if p2.is_a?(Symbol) || p2.is_a?(String)
+			sym = p2
+		  elsif !block_given?
+			raise "#{p2} is not a symbol nor a string"
+		  end
+		elsif p1.is_a?(Symbol)
+		  sym = p1
+		  if !p2.is_a?(Symbol) && !p2.nil?
+			raise "#{p2} is not a symbol nor a string"
+		  elsif p2.is_a?(Symbol) && !p2.nil?
+			raise "undefined method `#{p2}' for :#{p2}:Symbol"
+		  end
+		end
+	
+		if sym
+		  my_each do |curr|
+			acc = acc ? acc.send(sym, curr) : curr
+		  end
+		elsif block_given?
+		  my_each do |curr|
+			acc = acc ? yield(acc, curr) : curr
+		  end
+		else
+		  raise "no block given"
+		end
+		acc
 	end
 end
