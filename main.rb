@@ -1,9 +1,12 @@
+# rubocop: disable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
 module Enumerable
   def my_each
     return enum_for(:my_each) unless block_given?
 
-    (0..length - 1).each do |i|
+    i = 0
+    while i < length
       yield(self[i])
+      i += 1
     end
     self
   end
@@ -11,8 +14,10 @@ module Enumerable
   def my_each_with_index
     return enum_for(:my_each_with_index) unless block_given?
 
-    (0..length - 1).each do |i|
+    i = 0
+    while i < length
       yield(self[i], i)
+      i += 1
     end
     self
   end
@@ -22,78 +27,52 @@ module Enumerable
 
     items_selected = []
 
-    my_each do |item|
-      items_selected << item if yield(item)
-    end
+    my_each { |item| items_selected << item if yield(item) }
     items_selected
   end
 
   def my_all?(*args)
     if !args[0].nil?
-      my_each do |item|
-        return false unless args[0] === item
-      end
+      my_each { |item| return false unless item.is_a?(args[0]) }
     elsif block_given?
-      my_each do |item|
-        return false unless yield(item)
-      end
+      my_each { |item| return false unless yield(item) }
     else
-      my_each do |item|
-        return false unless item
-      end
+      my_each { |item| return false unless item }
     end
     true
   end
 
   def my_any?(*args)
     if !args[0].nil?
-      my_each do |item|
-        return true if args[0] === item
-      end
+      my_each { |item| return true if item.is_a?(args[0]) }
     elsif block_given?
-      my_each do |item|
-        return true if yield(item)
-      end
+      my_each { |item| return true if yield(item) }
     else
-      my_each do |item|
-        return true if item
-      end
+      my_each { |item| return true if item }
     end
     false
   end
 
   def my_none?(*args)
     if !args[0].nil?
-      my_each do |item|
-        return false if args[0] === item
-      end
+      my_each { |item| return false if item.is_a?(args[0]) }
     elsif block_given?
-      my_each do |item|
-        return false if yield(item)
-      end
+      my_each { |item| return false if yield(item) }
     else
-      my_each do |item|
-        return false if item
-      end
+      my_each { |item| return false if item }
     end
     true
   end
 
-  def my_count(p1 = nil)
+  def my_count(param = nil)
     count = 0
 
-    if !p1.nil?
-      my_each do |item|
-        count += 1 if item == p1
-      end
+    if !param.nil?
+      my_each { |item| count += 1 if item == param }
     elsif block_given?
-      my_each do |item|
-        count += 1 if yield(item)
-      end
+      my_each { |item| count += 1 if yield(item) }
     else
-      my_each do |_item|
-        count += 1
-      end
+      my_each { count += 1 }
     end
     count
   end
@@ -102,40 +81,30 @@ module Enumerable
     return enum_for(:my_map) unless block_given?
 
     arr = []
-    my_each do |item|
-      arr << yield(item)
-    end
+    my_each { |item| arr << yield(item) }
     arr
   end
 
-  def my_inject(p1 = nil, p2 = nil)
-    sym = nil
-    acc = nil
+  def my_inject(param1 = nil, param2 = nil)
+    sym = param1 if param1.is_a?(Symbol) || param1.is_a?(String)
+    acc = param1 if param1.is_a? Integer
 
-    if p1.is_a? Integer
-      acc = p1
-      if p2.is_a?(Symbol) || p2.is_a?(String)
-        sym = p2
+    if param1.is_a? Integer
+      if param2.is_a?(Symbol) || param2.is_a?(String)
+        sym = param2
       elsif !block_given?
-        raise "#{p2} is not a symbol nor a string"
+        raise "#{param2} is not a symbol nor a string"
       end
-    elsif p1.is_a?(Symbol)
-      sym = p1
-      if !p2.is_a?(Symbol) && !p2.nil?
-        raise "#{p2} is not a symbol nor a string"
-      elsif p2.is_a?(Symbol) && !p2.nil?
-        raise "undefined method `#{p2}' for :#{p2}:Symbol"
-      end
+    elsif param1.is_a?(Symbol) || param1.is_a?(String)
+      raise "#{param2} is not a symbol nor a string" if !param2.is_a?(Symbol) && !param2.nil?
+
+      raise "undefined method `#{param2}' for :#{param2}:Symbol" if param2.is_a?(Symbol) && !param2.nil?
     end
 
     if sym
-      my_each do |curr|
-        acc = acc ? acc.send(sym, curr) : curr
-      end
+      my_each { |curr| acc = acc ? acc.send(sym, curr) : curr }
     elsif block_given?
-      my_each do |curr|
-        acc = acc ? yield(acc, curr) : curr
-      end
+      my_each { |curr| acc = acc ? yield(acc, curr) : curr }
     else
       raise 'no block given'
     end
@@ -146,3 +115,5 @@ end
 def multiply_els(arr)
   arr.my_inject { |acc, curr| acc * curr }
 end
+
+# rubocop: enable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
