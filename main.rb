@@ -2,7 +2,7 @@ module Enumerable
   def my_each
     return enum_for(:my_each) unless block_given?
 
-    for i in 0..length-1 do
+    (0..length - 1).each do |i|
       yield(self[i])
     end
     self
@@ -11,7 +11,7 @@ module Enumerable
   def my_each_with_index
     return enum_for(:my_each_with_index) unless block_given?
 
-    for i in 0..length-1 do 
+    (0..length - 1).each do |i|
       yield(self[i], i)
     end
     self
@@ -35,14 +35,14 @@ module Enumerable
       end
     elsif block_given?
       my_each do |item|
-        return false unless yield(item)  
+        return false unless yield(item)
       end
     else
       my_each do |item|
         return false unless item
       end
     end
-   true
+    true
   end
 
   def my_any?(*args)
@@ -91,7 +91,7 @@ module Enumerable
         count += 1 if yield(item)
       end
     else
-      my_each do |item|
+      my_each do |_item|
         count += 1
       end
     end
@@ -111,30 +111,30 @@ module Enumerable
   def my_inject(p1 = nil, p2 = nil)
     sym = nil
     acc = nil
-  
-    if p1.is_a? (Integer)
+
+    if p1.is_a? Integer
       acc = p1
       if p2.is_a?(Symbol) || p2.is_a?(String)
-      sym = p2
+        sym = p2
       elsif !block_given?
-      raise "#{p2} is not a symbol nor a string"
+        raise "#{p2} is not a symbol nor a string"
       end
     elsif p1.is_a?(Symbol)
       sym = p1
       if !p2.is_a?(Symbol) && !p2.nil?
-      raise "#{p2} is not a symbol nor a string"
+        raise "#{p2} is not a symbol nor a string"
       elsif p2.is_a?(Symbol) && !p2.nil?
-      raise "undefined method `#{p2}' for :#{p2}:Symbol"
+        raise "undefined method `#{p2}' for :#{p2}:Symbol"
       end
     end
-  
+
     if sym
       my_each do |curr|
-      acc = acc ? acc.send(sym, curr) : curr
+        acc = acc ? acc.send(sym, curr) : curr
       end
     elsif block_given?
       my_each do |curr|
-      acc = acc ? yield(acc, curr) : curr
+        acc = acc ? yield(acc, curr) : curr
       end
     else
       raise 'no block given'
