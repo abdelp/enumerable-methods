@@ -26,8 +26,8 @@ module Enumerable
     return enum_for(:my_select) unless block_given?
 
     items_selected = []
-
     my_each { |item| items_selected << item if yield(item) }
+    items_selected = items_selected.to_h if is_a?(Hash)
     items_selected
   end
 
