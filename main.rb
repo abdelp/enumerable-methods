@@ -71,7 +71,7 @@ module Enumerable
 
   def my_map(*proc)
     arr = []
-  
+
     if !proc.empty?
       my_each { |item| arr << proc.call(item) }
     else
