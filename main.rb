@@ -90,10 +90,11 @@ module Enumerable
   end
 
   def my_inject(param1 = nil, param2 = nil)
+    arr = self.is_a?(Array) ? self : self.to_a
     sym = param1 if param1.is_a?(Symbol) || param1.is_a?(String)
     acc = param1 if param1.is_a? Integer
 
-    if param1.is_a? Integer
+    if param1.is_a?(Integer)
       if param2.is_a?(Symbol) || param2.is_a?(String)
         sym = param2
       elsif !block_given?
@@ -106,9 +107,10 @@ module Enumerable
     end
 
     if sym
-      my_each { |curr| acc = acc ? acc.send(sym, curr) : curr }
+      p "#{arr}"
+      arr.my_each { |curr| acc = acc ? acc.send(sym, curr) : curr }
     elsif block_given?
-      my_each { |curr| acc = acc ? yield(acc, curr) : curr }
+      arr.my_each { |curr| acc = acc ? yield(acc, curr) : curr }
     else
       raise 'no block given'
     end
