@@ -77,11 +77,15 @@ module Enumerable
     count
   end
 
-  def my_map
-    to_enum(:my_map) unless block_given?
-
+  def my_map(*proc)
     arr = []
-    my_each { |item| arr << yield(item) }
+
+    if !proc.empty?
+      my_each { |item| arr << proc.call(item) }
+    else
+      to_enum(:my_map) unless block_given?
+      my_each { |item| arr << yield(item) }
+    end
     arr
   end
 
@@ -116,4 +120,17 @@ def multiply_els(arr)
   arr.my_inject { |acc, curr| acc * curr }
 end
 
+# proc = Proc.new {|x| x * 2}
+
+# def foo(*proc)
+#   p "is not a proc"
+#   p "#{(proc).class}"
+#   p "#{proc}"
+#   if proc.is_a?(Proc)
+#     p "is a proc"
+#     [1,2,3].each{|x| proc.call(x)}
+#   end
+# end
+
+# foo(&proc)
 # rubocop: enable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
