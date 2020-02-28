@@ -44,7 +44,7 @@ module Enumerable
 
   def my_any?(*args)
     if !args[0].nil?
-      my_each { |item| return true if item.is_a?(args[0]) }
+      my_each { |item| return true if args[0] === item }
     elsif block_given?
       my_each { |item| return true if yield(item) }
     else
@@ -55,7 +55,7 @@ module Enumerable
 
   def my_none?(*args)
     if !args[0].nil?
-      my_each { |item| return false if item.is_a?(args[0]) }
+      my_each { |item| return false if args[0] === item }
     elsif block_given?
       my_each { |item| return false if yield(item) }
     else
