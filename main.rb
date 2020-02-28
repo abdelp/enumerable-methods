@@ -1,7 +1,8 @@
+# rubocop: disable Style/CaseEquality
 # rubocop: disable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
 module Enumerable
   def my_each
-    to_enum(:my_each) unless block_given?
+    return to_enum(:my_each) unless block_given?
 
     i = 0
     while i < length
@@ -12,7 +13,7 @@ module Enumerable
   end
 
   def my_each_with_index
-    to_enum(:my_each_with_index) unless block_given?
+    return to_enum(:my_each_with_index) unless block_given?
 
     i = 0
     while i < length
@@ -23,7 +24,7 @@ module Enumerable
   end
 
   def my_select
-    to_enum(:my_select) unless block_given?
+    return to_enum(:my_select) unless block_given?
 
     items_selected = []
     my_each { |item| items_selected << item if yield(item) }
@@ -54,7 +55,7 @@ module Enumerable
   end
 
   def my_none?(arg = nil, &block)
-    !my_any?(arg,&block)
+    !my_any?(arg, &block)
   end
 
   def my_count(param = nil)
@@ -70,20 +71,17 @@ module Enumerable
     count
   end
 
-  def my_map(*proc)
+  def my_map
+    return to_enum(:my_map) unless block_given?
+
     arr = []
 
-    if !proc.empty?
-      my_each { |item| arr << proc.call(item) }
-    else
-      to_enum(:my_map) unless block_given?
-      my_each { |item| arr << yield(item) }
-    end
+    my_each { |item| arr << yield(item) }
     arr
   end
 
   def my_inject(param1 = nil, param2 = nil)
-    arr = self.is_a?(Array) ? self : self.to_a
+    arr = is_a?(Array) ? self : to_a
     sym = param1 if param1.is_a?(Symbol) || param1.is_a?(String)
     acc = param1 if param1.is_a? Integer
 
@@ -114,17 +112,5 @@ def multiply_els(arr)
   arr.my_inject { |acc, curr| acc * curr }
 end
 
-# proc = Proc.new {|x| x * 2}
-
-# def foo(*proc)
-#   p "is not a proc"
-#   p "#{(proc).class}"
-#   p "#{proc}"
-#   if proc.is_a?(Proc)
-#     p "is a proc"
-#     [1,2,3].each{|x| proc.call(x)}
-#   end
-# end
-
-# foo(&proc)
+# rubocop: enable Style/CaseEquality
 # rubocop: enable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
