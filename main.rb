@@ -107,7 +107,6 @@ module Enumerable
     end
 
     if sym
-      p "#{arr}"
       arr.my_each { |curr| acc = acc ? acc.send(sym, curr) : curr }
     elsif block_given?
       arr.my_each { |curr| acc = acc ? yield(acc, curr) : curr }
