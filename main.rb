@@ -53,15 +53,8 @@ module Enumerable
     false
   end
 
-  def my_none?(*args)
-    if !args[0].nil?
-      my_each { |item| return false if args[0] === item }
-    elsif block_given?
-      my_each { |item| return false if yield(item) }
-    else
-      my_each { |item| return false if item }
-    end
-    true
+  def my_none?(arg = nil, &block)
+    !my_any?(arg,&block)
   end
 
   def my_count(param = nil)
