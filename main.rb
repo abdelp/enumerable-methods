@@ -33,7 +33,7 @@ module Enumerable
 
   def my_all?(*args)
     if !args[0].nil?
-      my_each { |item| return false unless item.is_a?(args[0]) }
+      my_each { |item| return false unless args[0] === item }
     elsif block_given?
       my_each { |item| return false unless yield(item) }
     else
