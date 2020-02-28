@@ -1,7 +1,7 @@
 # rubocop: disable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
 module Enumerable
   def my_each
-    return enum_for(:my_each) unless block_given?
+    to_enum(:my_each) unless block_given?
 
     i = 0
     while i < length
@@ -12,7 +12,7 @@ module Enumerable
   end
 
   def my_each_with_index
-    return enum_for(:my_each_with_index) unless block_given?
+    to_enum(:my_each_with_index) unless block_given?
 
     i = 0
     while i < length
@@ -23,7 +23,7 @@ module Enumerable
   end
 
   def my_select
-    return enum_for(:my_select) unless block_given?
+    to_enum(:my_select) unless block_given?
 
     items_selected = []
     my_each { |item| items_selected << item if yield(item) }
@@ -78,7 +78,7 @@ module Enumerable
   end
 
   def my_map
-    return enum_for(:my_map) unless block_given?
+    to_enum(:my_map) unless block_given?
 
     arr = []
     my_each { |item| arr << yield(item) }
