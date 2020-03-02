@@ -75,7 +75,7 @@ module Enumerable
     if !proc.empty?
       my_each { |item| arr << proc.call(item) }
     else
-      to_enum(:my_map) unless block_given?
+      return to_enum(:my_map) unless block_given?
       my_each { |item| arr << yield(item) }
     end
     arr
