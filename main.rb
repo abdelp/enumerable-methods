@@ -1,10 +1,16 @@
 module Enumerable
-  def my_each
+  def my_each(&block)
     return to_enum(:my_each) unless block_given?
 
     i = 0
     while i < length
-      is_a?(Array) ? yield(self[i]) : yield(keys[i], self[keys[i]])
+      if is_a?(Array)
+        yield(self[i])
+      elsif block.arity == 1
+        yield(assoc keys[i])
+      else
+        yield(keys[i], self[keys[i]])
+      end
       i += 1
     end
     self

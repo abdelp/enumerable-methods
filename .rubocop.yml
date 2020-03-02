@@ -21,6 +21,8 @@ Metrics/PerceivedComplexity:
   Enabled: false
 Metrics/CyclomaticComplexity:
   Enabled: false
+Metrics/ModuleLength:
+  Max: 103
 
 Style/Documentation:
   Enabled: false
