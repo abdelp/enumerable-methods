@@ -69,11 +69,11 @@ module Enumerable
     count
   end
 
-  def my_map(*proc)
+  def my_map(proc = nil)
     arr = is_a?(Array) ? self : to_a
     result = []
 
-    if !proc.empty?
+    if !proc.nil?
       arr.my_each { |item| result << proc.call(item) }
     else
       return to_enum(:my_map) unless block_given?
