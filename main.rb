@@ -70,15 +70,17 @@ module Enumerable
   end
 
   def my_map(*proc)
-    arr = []
+    arr = is_a?(Array) ? self : to_a
+    result = []
 
     if !proc.empty?
-      my_each { |item| arr << proc.call(item) }
+      arr.my_each { |item| result << proc.call(item) }
     else
       return to_enum(:my_map) unless block_given?
-      my_each { |item| arr << yield(item) }
+
+      arr.my_each { |item| result << yield(item) }
     end
-    arr
+    result
   end
 
   def my_inject(param1 = nil, param2 = nil)
