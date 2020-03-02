@@ -4,7 +4,7 @@ module Enumerable
 
     i = 0
     while i < length
-      yield(self[i])
+      is_a?(Array) ? yield(self[i]) : yield(keys[i], self[keys[i]])
       i += 1
     end
     self
@@ -24,9 +24,13 @@ module Enumerable
   def my_select
     return to_enum(:my_select) unless block_given?
 
-    items_selected = []
-    my_each { |item| items_selected << item if yield(item) }
-    items_selected = items_selected.to_h if is_a?(Hash)
+    if is_a?(Array)
+      items_selected = []
+      my_each { |item| items_selected << item if yield(item) }
+    else
+      items_selected = {}
+      my_each { |item, value| items_selected[item] = value if yield(item, value) }
+    end
     items_selected
   end
 
