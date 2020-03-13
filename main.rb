@@ -16,12 +16,18 @@ module Enumerable
     self
   end
 
-  def my_each_with_index
+  def my_each_with_index(&block)
     return to_enum(:my_each_with_index) unless block_given?
 
     i = 0
     while i < length
-      yield(self[i], i)
+      if is_a?(Array)
+        yield(self[i], i)
+      elsif block.arity == 1
+        yield(assoc keys[i])
+      else
+        yield([keys[i], self[keys[i]]], i)
+      end
       i += 1
     end
     self
