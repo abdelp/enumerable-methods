@@ -5,19 +5,20 @@ RSpec.describe Enumerable do
     subject { array.my_each }
     let(:array) { [1, 2, 3] }
     let(:range) { (1..3) }
+    let(:hash) { {test: 1} }
     let(:array_of_tuples) { [%i[a b], %i[c d]] }
 
     it 'is expected to return an enumerator when no block is given' do
       should be_kind_of(Enumerator)
     end
 
-    # add the same but with a hash (?)
-
     it 'is expected to return the collection that called the method when a block is given' do
       expect(array.my_each {}).to eq([1, 2, 3])
     end
 
-    # add the same but with a hash (?)
+    it 'is expected to return the hash collection that called the method when a block is given' do
+      expect(hash.my_each {}).to eq({test: 1})
+    end
 
     it { expect { |b| array.my_each(&b) }.to yield_successive_args(1, 2, 3) }
     it { expect { |b| array_of_tuples.my_each(&b) }.to yield_successive_args(%i[a b], %i[c d]) }
@@ -116,7 +117,7 @@ RSpec.describe Enumerable do
     end
   end
 
-  describe "#my_count" do
+  describe '#my_count' do
     subject { array.my_any? }
     let(:array) { [1, 2, 3] }
 
@@ -135,4 +136,6 @@ RSpec.describe Enumerable do
     #precedence argument or block?
   end
 
+  describe '#my_inject' do
+  end
 end
