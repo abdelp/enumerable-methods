@@ -24,8 +24,6 @@ RSpec.describe Enumerable do
     it { expect { |b| { a: 1, b: 2 }.my_each(&b) }.to yield_successive_args([:a, 1], [:b, 2]) }
   end
 
-  # assert the index usage
-
   describe '#my_each_with_index' do
     subject { array.my_each_with_index }
     let(:array) { [1, 2, 3] }
@@ -48,6 +46,7 @@ RSpec.describe Enumerable do
   describe '#my_all?' do
     subject { array.my_all? }
     let(:array) { [1, 2, 3] }
+    let(:param) { Integer }
 
     it 'is expected to be truthy when none element is false or nil and no block is given' do
       should be_truthy
@@ -63,6 +62,18 @@ RSpec.describe Enumerable do
 
     it 'is expected to be falsy when at least one element of the array doesn\'t pass the block condition' do
       expect(array.my_all? { |item| item < 3 }).to be_falsy
+    end
+
+    it 'is expected to be truthy on an empty collection' do
+      expect([].my_all?).to be_truthy
+    end
+
+    # expect to receive all items of the collection of the same type,
+    # receive an argument
+    # and be truthy
+
+    it 'is expected to be truthy when all the elements of the coleccion has case equality with the parameter given' do
+      expect(array.my_all?(param)).to be_truthy
     end
   end
 end
