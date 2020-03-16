@@ -104,12 +104,40 @@ RSpec.describe Enumerable do
       expect([].my_any?).to be_falsy
     end
 
-    # expect to receive all items of the collection of the same type,
-    # receive an argument
-    # and be truthy
-
     it 'is expected to be truthy when any element of the coleccion has case equality with the parameter given' do
       expect(array.my_any?(param)).to be_truthy
+    end
+  end
+
+  describe '#my_none?' do
+    subject { falsies.my_none? }
+    let(:falsies) { [false, false, false] }
+    let(:truthies) { [true, true, true] }
+    let(:mixed) { [true, false, nil, 1, 'a', :x] }
+    let(:param) { false }
+
+    it 'is expected to be truthy when all elements in the collection are false or nil and no block nor parameter is given' do
+      should be_truthy
+    end
+
+    it 'is expected to be falsy when any element in the collection is truthy and no block nor parameter is given' do
+      expect(mixed.my_none?).to be_falsy
+    end
+
+    it 'is expected to be truthy when all the elements in the collection doens\'t pass the block condition' do
+      expect(falsies.my_none? { |item| item == true }).to be_truthy
+    end
+
+    it 'is expected to be falsy on an empty collection' do
+      expect([].my_none?).to be_truthy
+    end
+
+    it 'is expected to be truthy when none element of the coleccion has case equality with the parameter given' do
+      expect(falsies.my_none?(true)).to be_truthy
+    end
+
+    it 'is expected to be falsy when any element of the coleccion has case equality with the parameter given' do
+      expect(mixed.my_none?(false)).to eq(false)
     end
   end
 
