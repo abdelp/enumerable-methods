@@ -135,5 +135,27 @@ RSpec.describe Enumerable do
   end
 
   describe '#my_inject' do
+    subject { array.my_inject }
+    let(:array) { [1, 2, 3] }
+
+    it 'is expected to return to combination of all elements in the collection with the given binary operator string' do
+      expect(array.my_inject('+')).to eq(6)
+    end
+
+    it 'is expected to return to combination of all elements in the collection with the given binary operator symbol' do
+      expect(array.my_inject(:+)).to eq(6)
+    end
+
+    it 'is expected to receive the first argument as initial value and the second one as the binary operator' do
+      expect(array.my_inject(1, :+)).to eq(7)
+    end
+
+    it 'is expected to combine the elements acording to the block given' do
+      expect(array.my_inject { |acc, curr| acc + curr }).to eq(6)
+    end
+
+    it 'is expected to combine the elements acording to the block given and the argument as initial value' do
+      expect(array.my_inject(1) { |acc, curr| acc + curr }).to eq(7)
+    end
   end
 end
