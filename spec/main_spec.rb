@@ -1,28 +1,28 @@
 require_relative '../main.rb'
 
 RSpec.describe Enumerable do
+  let(:numbers) { (-10..10).to_a }
+  let(:hash) { { a: :b, c: :d } }
+  let(:array_of_tuples) { [%i[a b], %i[c d]] }
+
   describe '#my_each' do
-    subject { array.my_each }
-    let(:array) { [1, 2, 3] }
-    let(:range) { (1..3) }
-    let(:hash) { { test: 1 } }
-    let(:array_of_tuples) { [%i[a b], %i[c d]] }
+    subject { numbers.my_each }
 
     it 'is expected to return an enumerator when no block is given' do
       should be_kind_of(Enumerator)
     end
 
     it 'is expected to return the collection that called the method when a block is given' do
-      expect(array.my_each {}).to eq([1, 2, 3])
+      expect(numbers.my_each {}).to eq(numbers)
     end
 
     it 'is expected to return the hash collection that called the method when a block is given' do
-      expect(hash.my_each {}).to eq({ test: 1 })
+      expect(hash.my_each {}).to eq(hash)
     end
 
-    it { expect { |b| array.my_each(&b) }.to yield_successive_args(1, 2, 3) }
-    it { expect { |b| array_of_tuples.my_each(&b) }.to yield_successive_args(%i[a b], %i[c d]) }
-    it { expect { |b| { a: 1, b: 2 }.my_each(&b) }.to yield_successive_args([:a, 1], [:b, 2]) }
+    it { expect { |b| numbers.my_each(&b) }.to yield_successive_args(*numbers) }
+    it { expect { |b| array_of_tuples.my_each(&b) }.to yield_successive_args(*array_of_tuples) }
+    it { expect { |b| hash.my_each(&b) }.to yield_successive_args(*hash.to_a) }
   end
 
   describe '#my_each_with_index' do
@@ -114,9 +114,10 @@ RSpec.describe Enumerable do
     let(:falsies) { [false, false, false] }
     let(:truthies) { [true, true, true] }
     let(:mixed) { [true, false, nil, 1, 'a', :x] }
+    let(:hash) { { val: 1, heigth: 2 } }
     let(:param) { false }
 
-    it 'is expected to be truthy when all elements in the collection are false or nil and no block nor parameter is given' do
+    it 'is expected to be truthy when all elements in the collection are falsy and no block nor parameter is given' do
       should be_truthy
     end
 
@@ -126,6 +127,10 @@ RSpec.describe Enumerable do
 
     it 'is expected to be truthy when all the elements in the collection doens\'t pass the block condition' do
       expect(falsies.my_none? { |item| item == true }).to be_truthy
+    end
+
+    it 'is expected to be falsy when any of the elements in the collection pass the block condition' do
+      expect(mixed.my_none? { |item| item == true }).to be_falsy
     end
 
     it 'is expected to be falsy on an empty collection' do
@@ -138,6 +143,14 @@ RSpec.describe Enumerable do
 
     it 'is expected to be falsy when any element of the coleccion has case equality with the parameter given' do
       expect(mixed.my_none?(false)).to eq(false)
+    end
+
+    it 'is expected to be truthy if all attributes in a hash doens\'t pass the block condition' do
+      expect(truthies.my_none? { |item| item == false })
+    end
+
+    it 'is expected to be falsy if any attribute in a hash pass the block condition' do
+      expect(mixed.my_none? { |item| item == false })
     end
   end
 
