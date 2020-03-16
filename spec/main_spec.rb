@@ -129,7 +129,9 @@ RSpec.describe Enumerable do
       expect(array.my_count { |item| item == 1 }).to eq(1)
     end
 
-    # precedence argument or block?
+    it 'is expected to ignore given block if an argument was given' do
+      expect(array.my_count(1) { |item| item > 1 }).to eq(1)
+    end
   end
 
   describe '#my_inject' do
