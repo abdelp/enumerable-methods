@@ -115,4 +115,24 @@ RSpec.describe Enumerable do
       expect(array.my_any?(param)).to be_truthy
     end
   end
+
+  describe "#my_count" do
+    subject { array.my_any? }
+    let(:array) { [1, 2, 3] }
+
+    it 'is expected to return the number of elements in a collection when none block nor parameter is give' do
+      expect(array.my_count).to eq(array.size)
+    end
+
+    it 'is expected to return the number of elements in the collection matching the given parameter' do
+      expect(array.my_count(1)).to eq(1)
+    end
+
+    it 'is expected to return the number of elements in the collection matching the block condition' do
+      expect(array.my_count { |item| item == 1 }).to eq(1)
+    end
+
+    #precedence argument or block?
+  end
+
 end
