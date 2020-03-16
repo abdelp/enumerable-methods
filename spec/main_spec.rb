@@ -134,6 +134,24 @@ RSpec.describe Enumerable do
     end
   end
 
+  describe '#my_map' do
+    subject { array.my_map }
+    let(:array) { [1, 2, 3] }
+    let(:hash) { { val: 1, heigth: 2 } }
+
+    it 'is expected to return an enumerator when no block is given' do
+      should be_kind_of(Enumerator)
+    end
+
+    it 'is expected to return an array with results of running block once for every element in the collection' do
+      expect(array.my_map { |item| item * 2 }).to eq([2, 4, 6])
+    end
+
+    it 'is expected to return an array with results of running block once for every hash attribute' do
+      expect(hash.my_map { |item| item }).to eq([[:val, 1], [:heigth, 2]])
+    end
+  end
+
   describe '#my_inject' do
     subject { array.my_inject }
     let(:array) { [1, 2, 3] }
