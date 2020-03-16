@@ -5,7 +5,7 @@ RSpec.describe Enumerable do
     subject { array.my_each }
     let(:array) { [1, 2, 3] }
     let(:range) { (1..3) }
-    let(:hash) { {test: 1} }
+    let(:hash) { { test: 1 } }
     let(:array_of_tuples) { [%i[a b], %i[c d]] }
 
     it 'is expected to return an enumerator when no block is given' do
@@ -17,7 +17,7 @@ RSpec.describe Enumerable do
     end
 
     it 'is expected to return the hash collection that called the method when a block is given' do
-      expect(hash.my_each {}).to eq({test: 1})
+      expect(hash.my_each {}).to eq({ test: 1 })
     end
 
     it { expect { |b| array.my_each(&b) }.to yield_successive_args(1, 2, 3) }
@@ -44,7 +44,7 @@ RSpec.describe Enumerable do
     it { expect { |b| { a: 1, b: 2 }.my_each_with_index(&b) }.to yield_successive_args([[:a, 1], 0], [[:b, 2], 1]) }
   end
 
-  describe "#my_select" do
+  describe '#my_select' do
     subject { array.my_select }
     let(:array) { [1, 2, 3] }
 
@@ -52,8 +52,8 @@ RSpec.describe Enumerable do
       should be_kind_of(Enumerator)
     end
 
-    it 'is expected to return an array withall of the elements matching the block condition' do
-      
+    it 'is expected to return an array with all of the elements matching the block condition' do
+      expect(array.my_select { |item| item == 1 }).to eq([1])
     end
   end
 
@@ -82,10 +82,6 @@ RSpec.describe Enumerable do
       expect([].my_all?).to be_truthy
     end
 
-    # expect to receive all items of the collection of the same type,
-    # receive an argument
-    # and be truthy
-
     it 'is expected to be truthy when all the elements of the coleccion has case equality with the parameter given' do
       expect(array.my_all?(param)).to be_truthy
     end
@@ -96,7 +92,7 @@ RSpec.describe Enumerable do
     let(:array) { [1, false, nil] }
     let(:param) { Integer }
 
-    it 'is expected to be truthy when at least one element in the collection is truthy and no block nor parameter is given' do
+    it 'is expected to be truthy when any element in the collection is truthy and no block nor parameter is given' do
       should be_truthy
     end
 
@@ -112,7 +108,7 @@ RSpec.describe Enumerable do
     # receive an argument
     # and be truthy
 
-    it 'is expected to be truthy when at least one element of the coleccion has case equality with the parameter given' do
+    it 'is expected to be truthy when any element of the coleccion has case equality with the parameter given' do
       expect(array.my_any?(param)).to be_truthy
     end
   end
@@ -133,7 +129,7 @@ RSpec.describe Enumerable do
       expect(array.my_count { |item| item == 1 }).to eq(1)
     end
 
-    #precedence argument or block?
+    # precedence argument or block?
   end
 
   describe '#my_inject' do
