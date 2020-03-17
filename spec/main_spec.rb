@@ -2,8 +2,11 @@ require_relative '../main.rb'
 
 RSpec.describe Enumerable do
   let(:numbers) { (-10..10).to_a }
+  let(:numbers_idx) { (-10..10).to_a.map.with_index { |a, i| [a, i]} }
   let(:hash) { { a: :b, c: :d } }
+  let(:hash_idx) { { a: :b, c: :d }.to_a.map.with_index { |k, v| [k, v] } }
   let(:array_of_tuples) { [%i[a b], %i[c d]] }
+  let(:array_of_tuples_idx) { [%i[a b], %i[c d]].map.with_index { |k, v| [k, v] } }
 
   describe '#my_each' do
     subject { numbers.my_each }
@@ -36,9 +39,9 @@ RSpec.describe Enumerable do
       expect(numbers.my_each_with_index {}).to eq(numbers)
     end
 
-    it { expect { |b| numbers.my_each_with_index(&b) }.to yield_successive_args([1, 0], [2, 1], [3, 2]) }
-    it { expect { |b| array_of_tuples.my_each_with_index(&b) }.to yield_successive_args([%i[a b], 0], [%i[c d], 1]) }
-    it { expect { |b| { a: 1, b: 2 }.my_each_with_index(&b) }.to yield_successive_args([[:a, 1], 0], [[:b, 2], 1]) }
+    it { expect { |b| numbers.my_each_with_index(&b) }.to yield_successive_args(*numbers_idx) }
+    it { expect { |b| array_of_tuples.my_each_with_index(&b) }.to yield_successive_args(*array_of_tuples_idx) }
+    it { expect { |b| hash.my_each_with_index(&b) }.to yield_successive_args(*hash_idx) }
   end
 
   describe '#my_select' do
