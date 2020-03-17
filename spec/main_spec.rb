@@ -2,11 +2,14 @@ require_relative '../main.rb'
 
 RSpec.describe Enumerable do
   let(:numbers) { (-10..10).to_a }
-  let(:numbers_idx) { (-10..10).to_a.map.with_index { |a, i| [a, i]} }
+  let(:numbers_idx) { (-10..10).to_a.map.with_index { |a, i| [a, i] } }
   let(:hash) { { a: :b, c: :d } }
   let(:hash_idx) { { a: :b, c: :d }.to_a.map.with_index { |k, v| [k, v] } }
   let(:array_of_tuples) { [%i[a b], %i[c d]] }
   let(:array_of_tuples_idx) { [%i[a b], %i[c d]].map.with_index { |k, v| [k, v] } }
+  let(:truthies) { [true, 1, 'a'] }
+  let(:falsies) { [false, nil] }
+  let(:mixed) { truthies + falsies }
 
   describe '#my_each' do
     subject { numbers.my_each }
@@ -45,21 +48,19 @@ RSpec.describe Enumerable do
   end
 
   describe '#my_select' do
-    subject { array.my_select }
-    let(:array) { [1, 2, 3] }
+    subject { numbers.my_select }
 
     it 'is expected to return an enumerator when no block is given' do
       should be_kind_of(Enumerator)
     end
 
     it 'is expected to return an array with all of the elements matching the block condition' do
-      expect(array.my_select { |item| item == 1 }).to eq([1])
+      expect(numbers.my_select { |item| item == 1 }).to eq([1])
     end
   end
 
   describe '#my_all?' do
-    subject { array.my_all? }
-    let(:array) { [1, 2, 3] }
+    subject { truthies.my_all? }
     let(:param) { Integer }
 
     it 'is expected to be truthy when none element is false or nil and no block is given' do
@@ -67,15 +68,15 @@ RSpec.describe Enumerable do
     end
 
     it 'is expected to be falsy when at least one element is false or nil and no block is given' do
-      expect([true, true, false].my_all?).to be_falsy
+      expect(mixed.my_all?).to be_falsy
     end
 
     it 'is expected to be truthy when all the elements of the array passes the block condition' do
-      expect(array.my_all? { |item| item < 4 }).to be_truthy
+      expect(numbers.my_all? { |item| item < 11 }).to be_truthy
     end
 
     it 'is expected to be falsy when at least one element of the array doesn\'t pass the block condition' do
-      expect(array.my_all? { |item| item < 3 }).to be_falsy
+      expect(numbers.my_all? { |item| item < 3 }).to be_falsy
     end
 
     it 'is expected to be truthy on an empty collection' do
@@ -83,7 +84,7 @@ RSpec.describe Enumerable do
     end
 
     it 'is expected to be truthy when all the elements of the coleccion has case equality with the parameter given' do
-      expect(array.my_all?(param)).to be_truthy
+      expect(numbers.my_all?(param)).to be_truthy
     end
   end
 
@@ -111,10 +112,6 @@ RSpec.describe Enumerable do
 
   describe '#my_none?' do
     subject { falsies.my_none? }
-    let(:falsies) { [false, false, false] }
-    let(:truthies) { [true, true, true] }
-    let(:mixed) { [true, false, nil, 1, 'a', :x] }
-    let(:hash) { { val: 1, heigth: 2 } }
     let(:param) { false }
 
     it 'is expected to be truthy when all elements in the collection are falsy and no block nor parameter is given' do
@@ -155,66 +152,62 @@ RSpec.describe Enumerable do
   end
 
   describe '#my_count' do
-    subject { array.my_any? }
-    let(:array) { [1, 2, 3] }
+    subject { numbers.my_any? }
 
     it 'is expected to return the number of elements in a collection when none block nor parameter is give' do
-      expect(array.my_count).to eq(array.size)
+      expect(numbers.my_count).to eq(numbers.size)
     end
 
     it 'is expected to return the number of elements in the collection matching the given parameter' do
-      expect(array.my_count(1)).to eq(1)
+      expect(numbers.my_count(1)).to eq(1)
     end
 
     it 'is expected to return the number of elements in the collection matching the block condition' do
-      expect(array.my_count { |item| item == 1 }).to eq(1)
+      expect(numbers.my_count { |item| item == 1 }).to eq(1)
     end
 
     it 'is expected to ignore given block if an argument was given' do
-      expect(array.my_count(1) { |item| item > 1 }).to eq(1)
+      expect(numbers.my_count(1) { |item| item > 1 }).to eq(1)
     end
   end
 
   describe '#my_map' do
-    subject { array.my_map }
-    let(:array) { [1, 2, 3] }
-    let(:hash) { { val: 1, heigth: 2 } }
+    subject { numbers.my_map }
 
     it 'is expected to return an enumerator when no block is given' do
       should be_kind_of(Enumerator)
     end
 
     it 'is expected to return an array with results of running block once for every element in the collection' do
-      expect(array.my_map { |item| item * 2 }).to eq([2, 4, 6])
+      expect(numbers.my_map { |item| item * 2 }).to eq(numbers.map { |item| item * 2 })
     end
 
     it 'is expected to return an array with results of running block once for every hash attribute' do
-      expect(hash.my_map { |item| item }).to eq([[:val, 1], [:heigth, 2]])
+      expect(hash.my_map { |item| item }).to eq(hash.to_a)
     end
   end
 
   describe '#my_inject' do
-    subject { array.my_inject }
-    let(:array) { [1, 2, 3] }
+    subject { numbers.my_inject }
 
     it 'is expected to return to combination of all elements in the collection with the given binary operator string' do
-      expect(array.my_inject('+')).to eq(6)
+      expect(numbers.my_inject('+')).to eq(numbers.inject('+'))
     end
 
     it 'is expected to return to combination of all elements in the collection with the given binary operator symbol' do
-      expect(array.my_inject(:+)).to eq(6)
+      expect(numbers.my_inject(:+)).to eq(numbers.inject(:+))
     end
 
     it 'is expected to receive the first argument as initial value and the second one as the binary operator' do
-      expect(array.my_inject(1, :+)).to eq(7)
+      expect(numbers.my_inject(1, :+)).to eq(numbers.inject(1, :+))
     end
 
     it 'is expected to combine the elements acording to the block given' do
-      expect(array.my_inject { |acc, curr| acc + curr }).to eq(6)
+      expect(numbers.my_inject { |acc, curr| acc + curr }).to eq(numbers.inject { |acc, curr| acc + curr })
     end
 
     it 'is expected to combine the elements acording to the block given and the argument as initial value' do
-      expect(array.my_inject(1) { |acc, curr| acc + curr }).to eq(7)
+      expect(numbers.my_inject(1) { |acc, curr| acc + curr }).to eq(numbers.inject(1) { |acc, curr| acc + curr })
     end
   end
 end
